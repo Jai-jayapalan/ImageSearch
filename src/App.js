@@ -1,25 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import Searchinput from './Components/SearchInput';
+import axios from 'axios';
+import ImageList from './Components/ImageList';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state={image:[]}
+    // bind the value
+    this.onSearchSubmit=this.onSearchSubmit.bind(this)
+  }
+
+  async onSearchSubmit(entry){
+    const response = await axios.get(`https://pixabay.com/api/?key=32975411-4a99bc665174f2e3ce120574d&q=${entry}&image_type=photo`)
+    console.log(response.data.hits)
+    this.setState({image:response.data.hits})
+  }
+
+  render(){
+    return(
+      <div>
+        <Searchinput onSearchSubmit={this.onSearchSubmit}/>
+        <p style={{textAlign:'center'}}>we currently have {this.state.image.length}</p>
+        <ImageList image={this.state.image}/>
+      </div>
+    )
+  }
 }
 
 export default App;
